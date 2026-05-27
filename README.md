@@ -26,7 +26,7 @@ Frontend - Bootstrap 5.3, Bootstrap Icons
 Адмінка - Django Admin
 
 
-Встановлення та запуск
+!!! Встановлення та запуск !!!
 1. Клонуй репозиторій
 bashgit clone https://github.com/your-username/pharmacy-project.git
 cd pharmacy-project
