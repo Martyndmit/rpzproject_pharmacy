@@ -1,6 +1,6 @@
 Веб-застосунок онлайн-аптеки, розроблений на фреймворку Django в рамках навчальної дисципліни «Розроблення програмного забезпечення» (КНУ ім. Тараса Шевченка, кафедра Теоретичної кібернетики).
 
-🚀 Функціонал
+Функціонал
 
 Каталог ліків — перегляд препаратів з фільтрацією за категорією, типом та текстовим пошуком
 Пошук за симптомами — підбір ліків за симптомами через теги або текстовий запит
@@ -11,7 +11,7 @@
 Адмін-панель — управління каталогом, замовленнями та статусами
 
 
-🛠️ Технологічний стек
+Технологічний стек
 Backend - Python 3.10+, Django 4.2 
 База даних - SQLite 3 
 Frontend - Bootstrap 5.3, Bootstrap Icons
@@ -19,7 +19,7 @@ Frontend - Bootstrap 5.3, Bootstrap Icons
 Кошик - Django Sessions
 Адмінка - Django Admin
 
-⚙️ Встановлення та запуск
+Встановлення та запуск
 1. Клонуй репозиторій
 bashgit clone https://github.com/your-username/pharmacy-project.git
 cd pharmacy-project
@@ -34,52 +34,15 @@ bashpython manage.py seed_data
 bashpython manage.py runserver
 6. Відкрий у браузері
 
-🌐 Сайт → http://127.0.0.1:8000/
-🔧 Адмінка → http://127.0.0.1:8000/admin/
+Сайт → http://127.0.0.1:8000/
+Адмінка → http://127.0.0.1:8000/admin/
 
 
-🔑 Дані для входу в адмінку
+Дані для входу в адмінку
 Логін - admin
 Пароль - admin123
 
-📁 Структура проєкту
-pharmacy_project/
-├── pharmacy_project/       # Конфігурація Django
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── shop/                   # Основний застосунок
-│   ├── models.py           # Моделі: Category, Symptom, Medicine, Order, OrderItem
-│   ├── views.py            # Логіка обробки запитів
-│   ├── forms.py            # Форми: кошик, замовлення, пошук
-│   ├── cart.py             # Клас кошика на основі сесій
-│   ├── admin.py            # Налаштування адмін-панелі
-│   ├── context_processors.py
-│   ├── urls.py
-│   ├── templates/shop/     # HTML-шаблони
-│   │   ├── base.html
-│   │   ├── home.html
-│   │   ├── catalog.html
-│   │   ├── medicine_detail.html
-│   │   ├── symptom_search.html
-│   │   ├── cart.html
-│   │   ├── checkout.html
-│   │   └── order_success.html
-│   └── management/
-│       └── commands/
-│           └── seed_data.py  # Команда наповнення БД
-├── manage.py
-├── requirements.txt
-└── README.md
-
-🗄️ Модель даних
-Category ──< Medicine >── Symptom
-                │
-              OrderItem
-                │
-             Order
-
-🧪 Тестові дані
+Тестові дані
 Команда seed_data створює:
 
 8 категорій — Знеболювальні, Антибіотики, Вітаміни, Серцево-судинні тощо
