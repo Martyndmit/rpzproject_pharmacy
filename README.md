@@ -28,7 +28,7 @@ Frontend - Bootstrap 5.3, Bootstrap Icons
 
 !!! Встановлення та запуск !!!
 1. Клонуй репозиторій
-bashgit clone https://github.com/your-username/pharmacy-project.git
+bashgit clone https://github.com/Martyndmit/pharmacy-project.git
 cd pharmacy-project
 2. Встанови залежності
 bashpip install -r requirements.txt
