@@ -1,0 +1,155 @@
+{% extends 'shop/base.html' %}
+{% block title %}{{ medicine.name }} — АптекаПлюс{% endblock %}
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Головна</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shop:catalog' %}">Каталог</a></li>
+            <li class="breadcrumb-item"><a href="{{ medicine.category.get_absolute_url }}">{{ medicine.category.name }}</a></li>
+            <li class="breadcrumb-item active">{{ medicine.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex gap-2 mb-3">
+                        {% if medicine.is_prescription %}
+                        <span class="badge badge-prescription fs-6 px-3 py-2">
+                            <i class="bi bi-file-medical me-1"></i>Рецептурний препарат
+                        </span>
+                        {% else %}
+                        <span class="badge badge-otc fs-6 px-3 py-2">
+                            <i class="bi bi-capsule me-1"></i>Без рецепту
+                        </span>
+                        {% endif %}
+                        <span class="badge bg-secondary">{{ medicine.category.name }}</span>
+                    </div>
+
+                    <h2 class="fw-bold">{{ medicine.name }}</h2>
+                    {% if medicine.manufacturer %}
+                    <p class="text-muted"><i class="bi bi-building me-2"></i>Виробник: <strong>{{ medicine.manufacturer }}</strong></p>
+                    {% endif %}
+
+                    {% if medicine.is_prescription %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Увага!</strong> Цей препарат відпускається виключно за рецептом лікаря.
+                        При оформленні замовлення потрібно буде надати рецепт.
+                    </div>
+                    {% endif %}
+
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-desc">Опис</button>
+                            {% if medicine.composition %}<button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-comp">Склад</button>{% endif %}
+                            {% if medicine.dosage %}<button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-dos">Дозування</button>{% endif %}
+                            {% if medicine.contraindications %}<button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-contra">Протипоказання</button>{% endif %}
+                            {% if medicine.symptoms.all %}<button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-sym">Симптоми</button>{% endif %}
+                        </div>
+                    </nav>
+                    <div class="tab-content p-3 border border-top-0 rounded-bottom mb-3">
+                        <div class="tab-pane fade show active" id="tab-desc">
+                            <p>{{ medicine.description }}</p>
+                        </div>
+                        {% if medicine.composition %}
+                        <div class="tab-pane fade" id="tab-comp">
+                            <p>{{ medicine.composition }}</p>
+                        </div>
+                        {% endif %}
+                        {% if medicine.dosage %}
+                        <div class="tab-pane fade" id="tab-dos">
+                            <p>{{ medicine.dosage }}</p>
+                        </div>
+                        {% endif %}
+                        {% if medicine.contraindications %}
+                        <div class="tab-pane fade" id="tab-contra">
+                            <p class="text-danger">{{ medicine.contraindications }}</p>
+                        </div>
+                        {% endif %}
+                        {% if medicine.symptoms.all %}
+                        <div class="tab-pane fade" id="tab-sym">
+                            <p class="text-muted small mb-2">Допомагає при:</p>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for symptom in medicine.symptoms.all %}
+                                <a href="{% url 'shop:symptom_search' %}?symptom={{ symptom.slug }}"
+                                   class="badge bg-light text-success border border-success text-decoration-none symptom-tag px-3 py-2">
+                                    {{ symptom.name }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Купити -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body p-4">
+                    <div class="price-tag fs-2 mb-3">{{ medicine.price }} грн</div>
+                    {% if medicine.stock > 0 %}
+                    <p class="text-success mb-3">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        {% if medicine.stock < 5 %}Залишилось мало{% else %}В наявності{% endif %}
+                    </p>
+                    <form method="post" action="{% url 'shop:cart_add' medicine.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Кількість:</label>
+                            {{ cart_form.quantity }}
+                            {{ cart_form.override }}
+                        </div>
+                        <button type="submit" class="btn btn-pharmacy w-100 py-2">
+                            <i class="bi bi-cart-plus me-2"></i>Додати до кошика
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-secondary">
+                        <i class="bi bi-x-circle me-2"></i>Немає в наявності
+                    </div>
+                    {% endif %}
+
+                    <hr>
+                    <div class="small text-muted">
+                        <p class="mb-1"><i class="bi bi-truck me-2"></i>Доставка Нова Пошта, Укрпошта, Кур'єр</p>
+                        <p class="mb-1"><i class="bi bi-shield-check me-2"></i>Оригінальний препарат</p>
+                        {% if medicine.is_prescription %}
+                        <p class="mb-0 text-danger"><i class="bi bi-file-medical me-2"></i>Потрібен рецепт</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Схожі товари -->
+    {% if related %}
+    <div class="mt-5">
+        <h4 class="section-title fw-bold mb-4">Схожі препарати</h4>
+        <div class="row g-3">
+            {% for item in related %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card card-medicine h-100 shadow-sm">
+                    <div class="card-body p-3">
+                        <span class="badge {% if item.is_prescription %}badge-prescription{% else %}badge-otc{% endif %} mb-2">
+                            {% if item.is_prescription %}Рецепт{% else %}Без рецепту{% endif %}
+                        </span>
+                        <h6>{{ item.name }}</h6>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="price-tag">{{ item.price }} грн</span>
+                            <a href="{{ item.get_absolute_url }}" class="btn btn-sm btn-outline-success">Детальніше</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

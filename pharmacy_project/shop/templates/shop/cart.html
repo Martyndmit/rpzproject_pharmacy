@@ -1,0 +1,110 @@
+{% extends 'shop/base.html' %}
+{% block title %}Кошик — АптекаПлюс{% endblock %}
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Головна</a></li>
+            <li class="breadcrumb-item active">Кошик</li>
+        </ol>
+    </nav>
+
+    <h3 class="section-title fw-bold mb-4"><i class="bi bi-cart3 me-2"></i>Мій кошик</h3>
+
+    {% if cart|length == 0 %}
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x fs-1 text-muted"></i>
+        <h5 class="mt-3 text-muted">Кошик порожній</h5>
+        <a href="{% url 'shop:catalog' %}" class="btn btn-pharmacy mt-3">Перейти до каталогу</a>
+    </div>
+    {% else %}
+
+    {% for item in cart %}
+    {% if item.medicine.is_prescription %}
+    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span>У вашому кошику є <strong>рецептурні препарати</strong>. При оформленні замовлення буде потрібен рецепт.</span>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {% for item in cart %}
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-3">
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-5">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-capsule fs-3 text-success"></i>
+                                <div>
+                                    <a href="{{ item.medicine.get_absolute_url }}" class="text-decoration-none text-dark fw-bold">
+                                        {{ item.medicine.name }}
+                                    </a>
+                                    <br>
+                                    {% if item.medicine.is_prescription %}
+                                    <span class="badge badge-prescription small">Рецептурний</span>
+                                    {% else %}
+                                    <span class="badge badge-otc small">Без рецепту</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <form method="post" action="{% url 'shop:cart_add' item.medicine.id %}" class="d-flex align-items-center gap-2">
+                                {% csrf_token %}
+                                {{ item.update_quantity_form.override }}
+                                {{ item.update_quantity_form.quantity }}
+                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <span class="price-tag">{{ item.total_price }} грн</span>
+                            <br><small class="text-muted">{{ item.price }} × {{ item.quantity }}</small>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <a href="{% url 'shop:cart_remove' item.medicine.id %}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Видалити «{{ item.medicine.name }}» з кошика?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top:20px">
+                <div class="card-header bg-success text-white fw-bold">
+                    <i class="bi bi-receipt me-2"></i>Підсумок
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Товарів:</span>
+                        <span>{{ cart|length }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="fw-bold">Разом:</span>
+                        <span class="price-tag fs-4">{{ cart.get_total_price }} грн</span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Вартість доставки розраховується при оформленні
+                    </p>
+                    <a href="{% url 'shop:order_create' %}" class="btn btn-pharmacy w-100 py-2">
+                        <i class="bi bi-bag-check me-2"></i>Оформити замовлення
+                    </a>
+                    <a href="{% url 'shop:catalog' %}" class="btn btn-outline-secondary w-100 mt-2">
+                        Продовжити покупки
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

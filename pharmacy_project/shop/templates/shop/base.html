@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}АптекаПлюс{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --pharmacy-green: #2e7d32;
+            --pharmacy-light: #e8f5e9;
+            --pharmacy-accent: #00897b;
+        }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .navbar-brand { font-weight: 700; font-size: 1.5rem; }
+        .navbar { background: linear-gradient(135deg, #1b5e20, #2e7d32) !important; }
+        .badge-prescription { background-color: #c62828; }
+        .badge-otc { background-color: #1565c0; }
+        .card-medicine { transition: transform 0.2s, box-shadow 0.2s; border: none; }
+        .card-medicine:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+        .btn-pharmacy { background-color: var(--pharmacy-green); border-color: var(--pharmacy-green); color: white; }
+        .btn-pharmacy:hover { background-color: #1b5e20; color: white; }
+        .cart-badge { background-color: #e53935; }
+        .prescription-banner { background: linear-gradient(135deg, #b71c1c, #c62828); }
+        footer { background: #1b2631; color: #ccc; }
+        .symptom-tag { cursor: pointer; transition: all 0.2s; }
+        .symptom-tag:hover { background-color: var(--pharmacy-green) !important; color: white !important; }
+        .price-tag { color: var(--pharmacy-green); font-weight: 700; font-size: 1.2rem; }
+        .section-title { border-left: 4px solid var(--pharmacy-green); padding-left: 12px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand text-white" href="{% url 'shop:home' %}">
+            <i class="bi bi-capsule-pill me-2"></i>АптекаПлюс
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'shop:home' %}">
+                        <i class="bi bi-house me-1"></i>Головна
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'shop:catalog' %}">
+                        <i class="bi bi-grid me-1"></i>Каталог
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'shop:symptom_search' %}">
+                        <i class="bi bi-search-heart me-1"></i>Пошук за симптомами
+                    </a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center gap-3">
+                <form class="d-flex" method="get" action="{% url 'shop:catalog' %}">
+                    <div class="input-group">
+                        <input class="form-control" type="search" name="q" placeholder="Пошук ліків..." style="min-width:200px">
+                        <button class="btn btn-light" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+                <a href="{% url 'shop:cart_detail' %}" class="btn btn-outline-light position-relative">
+                    <i class="bi bi-cart3 fs-5"></i>
+                    {% if cart_count %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill cart-badge">
+                        {{ cart_count }}
+                    </span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main class="py-4">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5 class="text-white"><i class="bi bi-capsule-pill me-2"></i>АптекаПлюс</h5>
+                <p class="small">Ваша надійна онлайн-аптека. Ліки з доставкою по всій Україні.</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6 class="text-white">Навігація</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="{% url 'shop:catalog' %}" class="text-secondary text-decoration-none">Каталог ліків</a></li>
+                    <li><a href="{% url 'shop:symptom_search' %}" class="text-secondary text-decoration-none">Пошук за симптомами</a></li>
+                    <li><a href="{% url 'shop:cart_detail' %}" class="text-secondary text-decoration-none">Кошик</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6 class="text-white">Контакти</h6>
+                <p class="small mb-1"><i class="bi bi-telephone me-2"></i>0 800 000 000</p>
+                <p class="small mb-1"><i class="bi bi-envelope me-2"></i>info@aptekaplus.ua</p>
+                <p class="small"><i class="bi bi-clock me-2"></i>Пн–Нд: 8:00–22:00</p>
+            </div>
+        </div>
+        <hr class="border-secondary">
+        <p class="text-center small mb-0">
+            &copy; 2024 АптекаПлюс. Навчальний проєкт — Розроблення програмного забезпечення.
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
