@@ -1,2 +1,2 @@
-# rpzproject_drugstore
+# rpzproject_pharmacy
 проект з дисципліни рпз на тему Онлайн-Аптека
