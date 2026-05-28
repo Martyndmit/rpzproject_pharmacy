@@ -13,7 +13,7 @@
 
 Технологічний стек
 
-Backend - Python 3.10+, Django 4.2 
+Backend - Python 3.10+, Django 5.1
 
 База даних - SQLite 3 
 
